@@ -94,14 +94,6 @@ void TR_Receive(void)
 				x_axis=(short)(str_get[3]+(str_get[4]<<8));//openmv存储数据的方式是小端模式，即数据的高字节存储到低地址，低字节存储到高地址
 				y_axis=(short)(str_get[5]+(str_get[6]<<8));//例如串口接收数据0xff01,那么先接收到的是0x01,后接到0xff，这里为什么高字节左移
 				//因为传进来的是个int类型的数字，可能是负数，那么就对高字节左移八位加上低字节即可。
-//				str1[2] = uart2Read()-0x30; 
-//				str1[3] = uart2Read()-0x30; 
-//				str1[4] = uart2Read()-0x30; 
-//				str1[5] = uart2Read()-0x30; 
-//				str1[6] = uart2Read()-0x30; 
-//				str1[7] = uart2Read()-0x30;  
-//				x_axis=str1[2]*100+str1[3]*10+str1[4];
-//				y_axis=str1[5]*100+str1[6]*10+str1[7];
 			}
 			 
 		}

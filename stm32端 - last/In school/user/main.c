@@ -83,7 +83,7 @@ int main(void)
 		}
 		if(output_y==0)
 		{
-			P_value=4;
+			P_value=4;//这一部分是我在调试时候用到的，属于冗余。
 			front_left_wheel_control(1,standard_pwm+output_x);
 			front_right_wheel_control(1,standard_pwm-output_x);
 			back_left_wheel_control(1,standard_pwm+output_x);

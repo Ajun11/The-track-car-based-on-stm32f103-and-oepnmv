@@ -13,7 +13,6 @@
 #define            TIM_PSC                         8
 /**************************函数声明********************************/
 
-void GENERAL_TIM_Init(void);
 /*轮子端口定义*/
 //这里由于我以前对L298N理解有误，发现其实在两端的跳帽口输入pwm依然可以起到控制的作用，只是说那四个引脚要有高低的区别，他们之间高低差别带动电机运动方向。
 //在此对此头文件进行修改
@@ -87,7 +86,6 @@ void GENERAL_TIM_Init(void);
 #define           right_back_wheel_control_2_low     GPIO_ResetBits(GPIOB,GPIO_Pin_9)
 #define           right_back_wheel_control_2_high    GPIO_SetBits(GPIOB,GPIO_Pin_9)
 /**************************函数声明********************************/
-
 //judge_value判断前后，Space为CRR值 要求：CRR<800
 //左前轮前转后转以及速度
 void  front_left_wheel_control(int judge_value,unsigned int Space);
