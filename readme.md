@@ -50,6 +50,6 @@ STM32 PA2 <---> OpenMV P5
 STM32 PA3 <---> OpenMV P4
 ```
 
-Subsequently, you can program the respective boards by uploading the code: the STM32 can be programmed using the Keil IDE, while the OpenMV module can be programmed via the OpenMV IDE. I think there will be some problem :question:, the best way is understand the principle and slove the problem.
+Subsequently, you can program the respective boards by uploading the code: the STM32 can be programmed using the Keil IDE, while the OpenMV module can be programmed via the OpenMV IDE. I think there will be some problem, the best way is understand the principle and slove the problem.
 
-## :question: You can know more in `more.pdf` file.
+## :question: You can know more in `more.pdf` file. 
