@@ -68,11 +68,7 @@ The OpenMV platform encapsulates the above steps into a convenient function, all
 
 To enable the gimbal to track the target and keep it centered in the camera's field of view, the OpenMV module provides the x and y coordinates of the target object's center through its target detection function. However, the coordinate system in OpenMV uses the bottom-left corner of the image as the origin, meaning that the obtained x and y coordinates are always positive. This makes it challenging to determine the direction of the target's deviation (left/right or up/down) relative to the image center, which is necessary for effective gimbal tracking. To address this issue, a simple coordinate transformation is applied. The OpenMV module provides functions to retrieve the image dimensions, namely the width (width) and height (height). Given the target's center coordinates `(x, y)`, the relative position of the target with respect to the image center can be calculated using the following proportional approach:
 $$
-y1=y/height-0.5
-$$
-
-$$
-x1=x/width-0.5
+y1=y/height-0.5\\x1=x/width-0.5
 $$
 
 With the relative offsets $x_1$and $y_1$ obtained as the latest values, their ranges are both $[−0.5,0.5] $ To ensure the gimbal continuously tracks the target, these normalized coordinates must be converted into rotation angles for the servo motors of the 2-DOF gimbal, as illustrated in Figure 1.1. The lower servo controls the yaw angle, which corresponds to the camera's x-axis, while the upper servo controls the pitch angle, which corresponds to the camera's y-axis. The mechanical rotation range of the yaw servo is $[0^{\circ},180^{\circ}]$, where an angle of $0^{\circ}$ positions the servo to the right, and an angle of $180^{\circ}$ positions it to the left. The mechanical rotation range of the pitch servo is $ [90^\circ, 180^\circ]%$ , where an angle of $90^\circ$keeps the platform horizontal, and an angle of $180^\circ$ positions the platform perpendicular to the horizontal plane.
@@ -83,19 +79,12 @@ With the relative offsets $x_1$and $y_1$ obtained as the latest values, their ra
 
 To achieve smooth and stable gimbal tracking, a PD control algorithm is implemented, as PD control is well-suited for servo motors due to its stability. Given the current normalized coordinates of the target $(x_1, y_1)$, the objective is to move the target to the center of the camera's field of view, i.e., the target position $(0, 0)$. The error along the x-axis and y-axis are defined as `error_x` and `error_y`, respectively. Let the previous error be `error_x_last` and `error_y_last`, and the current servo angles be `yaw_now`     and  `pitchnow`. A simplified incremental PD control algorithm is applied as follows
 $$
-output_x=Kp*（error_x ）+Kd*(error_x-error_(x_{last} ))
-$$
-
-$$
-output_y=Kp*(error_y )+Kd*(error_y-error_(y_{last} ))
-$$
-
-$$
-yaw_{now}+=output_x
-$$
-$$
+output_x=Kp*（error_x ）+Kd*(error_x-error_(x_{last} ))\\
+output_y=Kp*(error_y )+Kd*(error_y-error_(y_{last} )) \\
+yaw_{now}+=output_x\\
 pitch_{now}+=output_y
 $$
+
 ### :straight_ruler: Straight-line distance to the target
 
 The target selected for recognition in this project is an AprilTag. In the OpenMV ecosystem, the image.find_apriltags() function is utilized to detect AprilTags within the captured image. For detailed usage, refer to the OpenMV documentation: [image — Machine Vision — MicroPython 1.9.2 Documentation](https://docs.singtown.com/micropython/zh/latest/openmvcam/library/omv.image.html#image.Image.image.find_apriltags). The specific attributes of the returned AprilTag object can be found in the documentation: [image.apriltag — Machine Vision — MicroPython 1.9.2 Documentation](https://docs.singtown.com/micropython/zh/latest/openmvcam/library/omv.image.html#image.apriltag).
@@ -150,19 +139,14 @@ $$
 $$
 It should be noted that the yaw here is not $ \text{yaw}_{\text{now}} $, and the pitch is not $\text{pitch}_{\text{now}}$ . Both $ \text{yaw}_{\text{now}} $ and $\text{pitch}_{\text{now}} $ represent the current rotation angles of the servo motor. Therefore, we determine these based on the mechanical and geometric properties of the system (for further details, refer to  **Two axes gimbal tracking control**).
 $$
-pitch=180-pitch_{now}
-$$
-
-$$
-yaw=yaw_{now}-90
-$$
-
-$$
+pitch=180-pitch_{now}\\
+yaw=yaw_{now}-90\\
 (x,y)=[distance*cos(pitch)*sin(yaw),  distance*cos(pitch)*cos(yaw)]\\
 =
 [-distance*cos(pitch_{now})*cos(yaw_{now}),-distance*cos(pitch_{now})*sin(yaw_{now})]
 $$
-With this, the tasks of the OpenMV are essentially completed, and the obtained x x x and y y y represent the spatial coordinates of the object. Next, the information needs to be transmitted via the serial port.
+
+With this, the tasks of the OpenMV are essentially completed, and the obtained x  and y  represent the spatial coordinates of the object. Next, the information needs to be transmitted via the serial port.
 
 ### :information_source: Transmission and reception of  serial port messages
 
