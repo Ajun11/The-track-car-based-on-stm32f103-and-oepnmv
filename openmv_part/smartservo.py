@@ -149,10 +149,11 @@ while(True):
         print("目标x坐标",get_x,"目标y坐标",get_y,"当前yaw",yaw_now,"pitch_now",pitch_now,"距离",distance)
         find_flag=1
         # 通过串口发送数据(二进制　低字节序)
+        # 这是设置小端格式
         uart.write(struct.pack('<BBBhh', 0xFF, 0xF1, True, int(get_x), int(get_y)))
         print("send ok")
-        #帧头1>帧头2>True>数据1的低八位>数据1的高八位>数据2的低八位>数据2的高八位
-        #因为在openmv中存储的格式是小端，即低八位在低地址，高八位在高地址
+        # 帧头1>帧头2>True>数据1的低八位>数据1的高八位>数据2的低八位>数据2的高八位
+        # 因为在openmv中存储的格式是小端，即低八位在低地址，高八位在高地址
     else:
         # 目标丢失
         print("色块丢失!!!")
@@ -162,22 +163,22 @@ while(True):
     # 打印当前的帧率
     print(clock.fps())
 
-    # pack各字母对应类型
-    # x   pad byte        no value            1
-    # c   char            string of length 1  1
-    # b   signed char     integer             1
-    # B   unsigned char   integer             1
-    # ?   _Bool           bool                1
-    # h   short           integer             2
-    # H   unsigned short  integer             2
-    # i   int             integer             4
-    # I   unsigned int    integer or long     4
-    # l   long            integer             4
-    # L   unsigned long   long                4
-    # q   long long       long                8
-    # Q   unsilong long   long                8
-    # f   float           float               4
-    # d   double          float               8
-    # s   char[]          string              1
-    # p   char[]          string              1
-    # P   void *          long
+     pack各字母对应类型
+     x   pad byte        no value            1
+     c   char            string of length 1  1
+     b   signed char     integer             1
+     B   unsigned char   integer             1
+     ?   _Bool           bool                1
+     h   short           integer             2
+     H   unsigned short  integer             2
+     i   int             integer             4
+     I   unsigned int    integer or long     4
+     l   long            integer             4
+     L   unsigned long   long                4
+     q   long long       long                8
+     Q   unsilong long   long                8
+     f   float           float               4
+     d   double          float               8
+     s   char[]          string              1
+     p   char[]          string              1
+     P   void *          long

@@ -3,7 +3,7 @@
 #include "usart.h"
 #include "stdio.h"
 #define UART2_BUFFER_SIZE 256 
-volatile uint8_t rx2Buffer[UART2_BUFFER_SIZE]; 
+volatile uint8_t rx2Buffer[UART2_BUFFER_SIZE]; //可以容纳256个字节的缓冲数组
 volatile uint8_t rxBufferNum  = 0;
 volatile uint8_t h_u32RecCnt = 0; 
 static volatile uint8_t rx2BufferRTail  = 0;
@@ -21,15 +21,15 @@ void USART2_Init(u32 bound)
   USART_InitTypeDef USART_InitStructure;
  	NVIC_InitTypeDef NVIC_InitStructure;
  
-	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA, ENABLE);//使能GPIOA,D时钟
+	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA, ENABLE);//使能GPIOA,时钟
 	RCC_APB1PeriphClockCmd(RCC_APB1Periph_USART2,ENABLE);//使能USART2时钟 
  
 	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_2;	//PA2
-  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP;	//复用推挽
+  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP;	//Tx
   GPIO_Init(GPIOA, &GPIO_InitStructure);
    
   GPIO_InitStructure.GPIO_Pin = GPIO_Pin_3;//PA3
-  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN_FLOATING; //浮空输入
+  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN_FLOATING; //浮空输入Rx
   GPIO_Init(GPIOA, &GPIO_InitStructure);  
 
 	RCC_APB1PeriphResetCmd(RCC_APB1Periph_USART2,ENABLE);//复位串口2
@@ -118,7 +118,7 @@ uint8_t uart2Read(void)
     {
         rx2BufferRTail  = 0;
     } 
-    h_u32RecCnt--;//这里就变成了0，只有当再次触发
+    h_u32RecCnt--;//这里就变成了0，只有当再次触发中断才会变成1
     return ch;
 }
 
@@ -131,12 +131,13 @@ void USART2_IRQHandler(void)
 { //千万不能用USART_GetITStatus
 	if(USART_GetFlagStatus(USART2, USART_IT_RXNE) != RESET)  //接收中断有效,若接收数据寄存器满
 	{
-		rx2Buffer[rxBufferNum] = USART_ReceiveData(USART2); //接收8 Bit数据 ,例如0x03
+		rx2Buffer[rxBufferNum] = USART_ReceiveData(USART2); //接收8 Bit数据 就是一字节数据,例如0x03
 		rxBufferNum++;
-		if (rxBufferNum >= UART2_BUFFER_SIZE ) rxBufferNum = 0;//这里的判断仅仅是设置存储的限制而已，即此数组可以一共存储32组数据
-		h_u32RecCnt++;
+		if (rxBufferNum >= UART2_BUFFER_SIZE ) rxBufferNum = 0;//这里的判断仅仅是设置存储的限制而已，即此数组可以一共存储256字节数据
+		h_u32RecCnt++;//标志进数据的标志位
   } 
 } 
+//这个应该是我写的
 uint8_t usart_read_byte(void)
 {
 	uint8_t values;
